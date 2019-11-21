@@ -8,3 +8,6 @@ col_user.delete_many({})
 
 user = [{'user_id':0, 'email': 'cbchoi@handong.edu', 'rank':0}]
 col_user.insert_many(user)
+
+results = col_user.find()
+[print(result) for result in results] 
