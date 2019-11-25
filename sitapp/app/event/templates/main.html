@@ -1,0 +1,15 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% macro print_result(results) %}
+   {% for result in results %}
+   <li> {{ results }} </li>
+   {% endfor %}
+{% endmacro %}
+
+
+
+<div class = "page-header">
+	{{print_result(results)}}
+	{{ wtf.quick_form(form)}}
+</div>
+
