@@ -27,8 +27,8 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    collection = db.get_collection('user')
-    collection.update_one({'id':current_user.id},{'$set':{'last_seen':datetime.utcnow()}})
+    # collection = db.get_collection('user')
+    # collection.update_one({'id':current_user.id},{'$set':{'last_seen':datetime.utcnow()}})
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
@@ -74,7 +74,7 @@ def unconfirmed():
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if current_user.is_anonymous or current_user.confirmed:
         return redirect('main.index')
-        return render_template('auth/unconfirmed.html')
+    return render_template('auth/unconfirmed.html')
 
 @auth.route('/confirm')
 @login_required

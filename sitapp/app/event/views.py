@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, length
 
-from flask import Flask, render_template, session, redirect, url_for, flash
+from flask import Flask, render_template, session, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap
 
 '''
@@ -23,7 +23,6 @@ print(results)
 '''
 
 app = Flask(__name__)
-
 ######
 app.config['SECRET_KEY'] = 'hard to guess string'
 ######
@@ -77,10 +76,21 @@ def index():
 	col_event = set_Mongo()
 	cursor = col_event.find()
 	results = [result for result in col_event.find()]
-		
-	if form.validate_on_submit():
-		return redirect(url_for('create'))
-	return render_template('main.html', results = results, form = form)
+	names = [result["name"] for result in col_event.find()]
+
+	#value = request.form.getlist('check') 
+	#if form.validate_on_submit():
+		# for i in names:
+		# 	i = str(i)
+		# 	if request.form.get(i):
+		# 		print(request.form.get(i))
+				# col_event.delete_one({'name':i})
+				# print(col_event.delete_one({'name':i}))
+	if request.method == "POST":
+		print(request.form.get("name"))
+		col_event.delete_one({'name':request.form.get("name")})
+		return redirect(url_for('index'))
+	return render_template('main.html', results = results, form = form, len = len(results))
 
 
 @app.route('/create', methods=['GET', 'POST'])

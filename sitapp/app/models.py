@@ -25,6 +25,11 @@ class User(UserMixin, object):
 		self.username = username
 		self.password = password
 
+	def ping(self):
+		self.last_seen = datetime.utcnow()
+		collection = db.get_collection('users')
+		results = collection.update_one({'id':self.id}, {'$set':{'last_seen':self.last_seen}})
+
 	@property
 	def password(self):
 		raise AttributeError('password is not a readable attribute')
@@ -52,7 +57,7 @@ class User(UserMixin, object):
 		return s.dumps({'confirm': self.id}).decode('utf-8')
 
 	def confirm(self, token):
-		print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		print("123123123123!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		s = Serializer(current_app.config['SECRET_KEY'])
 		try:
 			data = s.loads(token.encode('utf-8'))
@@ -64,11 +69,6 @@ class User(UserMixin, object):
 		collection = db.get_collection('user')
 		results = collection.update_one({'id':self.id}, {'$set':{'confirmed':self.confirmed}})
 		return True
-
-	def ping(self):
-		self.last_seen = datetime.utcnow()
-		collection = db.get_collection('users')
-		results = collection.update_one({'id':self.id}, {'$set':{'last_seen':self.last_seen}})
 
 	def to_dict(self):
 		dict_user = {
