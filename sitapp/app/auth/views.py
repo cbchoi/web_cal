@@ -16,7 +16,7 @@ def login():
 		collection = db.get_collection('user')
 		results = collection.find_one({'id':form.email.data})
 		if results is not None:
-			user = User("", "", "") 
+			user = User(form.email.data, "", "") 
 			user.from_dict(results)
 			if user is not None and user.verify_password(form.password.data):
 				login_user(user, form.remember_me.data)
@@ -71,9 +71,10 @@ def before_request():
 
 @auth.route('/unconfirmed')
 def unconfirmed():
-	if current_user.is_anonymous or current_user.confirmed:
-		return redirect('main.index')
-	return render_template('auth/unconfirmed.html')
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    if current_user.is_anonymous or current_user.confirmed:
+        return redirect('main.index')
+        return render_template('auth/unconfirmed.html')
 
 @auth.route('/confirm')
 @login_required

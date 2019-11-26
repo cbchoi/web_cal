@@ -41,7 +41,7 @@ class User(UserMixin, object):
 		collection = db.get_collection('user')
 		results = collection.find_one({'id':user_id})
 		if results is not None:
-			user = User("","","") # 20191112
+			user = User(results['id'],"","") # 20191112
 			user.from_dict(results)
 			return user
 		else:
@@ -52,6 +52,7 @@ class User(UserMixin, object):
 		return s.dumps({'confirm': self.id}).decode('utf-8')
 
 	def confirm(self, token):
+		print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		s = Serializer(current_app.config['SECRET_KEY'])
 		try:
 			data = s.loads(token.encode('utf-8'))
@@ -63,6 +64,11 @@ class User(UserMixin, object):
 		collection = db.get_collection('user')
 		results = collection.update_one({'id':self.id}, {'$set':{'confirmed':self.confirmed}})
 		return True
+
+	def ping(self):
+		self.last_seen = datetime.utcnow()
+		collection = db.get_collection('users')
+		results = collection.update_one({'id':self.id}, {'$set':{'last_seen':self.last_seen}})
 
 	def to_dict(self):
 		dict_user = {
@@ -83,8 +89,7 @@ class User(UserMixin, object):
 			self.id = data['id']
 			self.username = data['username']
 			self.password_hash = data['password_hash']
-			self.member_since = data.get('member_since')
-			self.last_seen = data.get('last_seen')
+			self.member_since = data['member_since']
+			self.last_seen = data['last_seen']
 			self.confirmed = data['confirmed'],
 			self.rank = data["rank"]
-			print(data)

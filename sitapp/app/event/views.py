@@ -76,13 +76,11 @@ def index():
 	form = DeleteButton()
 	col_event = set_Mongo()
 	cursor = col_event.find()
-	reults = []
-	for event in cursor:
-		results.append(event)
+	results = [result for result in col_event.find()]
 		
 	if form.validate_on_submit():
 		return redirect(url_for('create'))
-	return render_template('main.html', rseults = results, form = form)
+	return render_template('main.html', results = results, form = form)
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -116,7 +114,7 @@ def create():
 		#form.schedules.data = ''
 		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
 		results = col_event.find()
-		[print(result) for result in results] 
+		[print(result) for result in results]
 		return redirect(url_for('index'))
 	return render_template('create.html',  form = form,
 		year = session.get('year'), month = session.get('month'),

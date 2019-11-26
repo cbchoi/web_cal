@@ -9,8 +9,6 @@ from flask_login import current_user
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-	collection = db.get_collection('user')
-	collection.update_one({'id':current_user.id},{'$set':{'last_seen':datetime.utcnow()}})
 	form = NameForm()
 	if form.validate_on_submit():
 		old_name = session.get('name')
