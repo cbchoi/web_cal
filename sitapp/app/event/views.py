@@ -48,7 +48,7 @@ def set_Mongo():
 	db = conn.get_database('web_cal')
 	col_event = db.get_collection('event')
 	#col_event.delete_many({})
-	print(col_event.find())
+	#print(col_event.find())
 	return col_event
 
 
@@ -67,17 +67,32 @@ class NameForm(FlaskForm):
 ######
 
 
-class DeleteButton(FlaskForm):
-    submit = SubmitField("일정삭제")
+class CreateButton(FlaskForm):
+    submit = SubmitField("일정만들기")
+    #delete = SubmitField("삭제하기")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	form = DeleteButton()
+	form = CreateButton()
 	col_event = set_Mongo()
-	cursor = col_event.find()
+	#cursor = col_event.find()
 	results = [result for result in col_event.find()]
 	names = [result["name"] for result in col_event.find()]
+	chk_lst = []
+	n = len(results)
+	#for i in range(n):
+	#	chk_lst.append(results[i]["name"])
+	#print(chk_lst)
 
+	#전체 삭제하기용
+	#col_event.delete_many({})
+
+	#if request.method == "POST":
+	#	print(request.form.get('name'))
+	#	for i in range(n):
+	#		if request.form.get(i):
+	#			col_event.delete_one({'name':request.form.get(i)})
+	#	return redirect(url_for('index'))
 	#value = request.form.getlist('check') 
 	#if form.validate_on_submit():
 		# for i in names:
@@ -86,11 +101,13 @@ def index():
 		# 		print(request.form.get(i))
 				# col_event.delete_one({'name':i})
 				# print(col_event.delete_one({'name':i}))
+	if form.validate_on_submit():
+		return redirect(url_for('create'))
 	if request.method == "POST":
-		print(request.form.get("name"))
+		#print(request.form.get("name"))
 		col_event.delete_one({'name':request.form.get("name")})
 		return redirect(url_for('index'))
-	return render_template('main.html', results = results, form = form, len = len(results))
+	return render_template('main.html', results = results, form = form, len = n)
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -124,7 +141,7 @@ def create():
 		#form.schedules.data = ''
 		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
 		results = col_event.find()
-		[print(result) for result in results]
+		#[print(result) for result in results]
 		return redirect(url_for('index'))
 	return render_template('create.html',  form = form,
 		year = session.get('year'), month = session.get('month'),
