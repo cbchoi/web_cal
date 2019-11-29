@@ -9,6 +9,8 @@ from . import event
 from flask import Flask, render_template, session, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap
 
+from flask_login import login_user, login_required, logout_user, current_user
+from .. import db
 '''
 conn = pymongo.MongoClient('mongodb://db:27017')
 db = conn.get_database("events")
@@ -59,20 +61,25 @@ def Make_event(form):
 
 	return name, date, date_num, location, schedules
 
+
 @event.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
 	form = CreateButton()
 	col_event = set_Mongo()
 	#col_event.delete_many({})
-	results = [result for result in col_event.find()]
+	results = [result for result in col_event.find({"username":current_user.username})]
+	print(results)
+	print(current_user.user_number)
+	print(current_user.username)
+	print(current_user.confirmed)
+	print(current_user.user_number)
 
-	unsorted_results = [result for result in col_event.find()]
+	unsorted_results = [result for result in col_event.find({"username":current_user.username})]
 	results = sorted(unsorted_results, key=lambda a: a['date_num'])
 	#print(results)
 
-
-
-	names = [result["name"] for result in col_event.find()]
+	names = [result["name"] for result in col_event.find({"username":current_user.username})]
 	chk_lst = []
 	n = len(results)
 	print("??")
@@ -95,6 +102,7 @@ def index():
 
 
 @event.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
 	form = NameForm()
 	#d_button = DeleteButton()
@@ -103,7 +111,7 @@ def create():
 		col_event = set_Mongo()
 		name, date, date_num, location, schedules = Make_event(form)
 
-		col_event.insert_one({"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules})
+		col_event.insert_one({"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules, "username":current_user.username})
 		results = col_event.find()
 		return redirect(url_for('.index'))
 	return render_template('event/create.html',  form = form,
@@ -111,6 +119,7 @@ def create():
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
 @event.route('/update/<req_name>', methods=['GET', 'POST'])
+@login_required
 def update(req_name):
 	form = NameForm()
 	if form.validate_on_submit():
@@ -118,7 +127,7 @@ def update(req_name):
 		name, date, date_num, location, schedules = Make_event(form)
 
 		#form.schedules.data = ''
-		col_event.update_one({"name":req_name}, {'$set': {"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules}})
+		col_event.update_one({"name":req_name}, {'$set': {"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules, "username":current_user.username}})
 		results = col_event.find()
 
 		return redirect(url_for('.index'))

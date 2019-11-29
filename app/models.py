@@ -15,13 +15,13 @@ from datetime import datetime
 
 class User(UserMixin, object):
 	id = ""
-	username = "yire"
+	username = ""
 	role = None # 20191112
 	password_hash = ""
 	confirmed = False
 	member_since = ""
 	last_seen = ""
-	user_number = 0
+	# user_number = 0
 
 	def __init__(self, email, username, password):
 		self.id = email
@@ -74,8 +74,10 @@ class User(UserMixin, object):
 		if data.get('confirm') != self.id:
 			return False
 		self.confirmed = True
+		# self.user_number =+ 1
 		collection = db.get_collection('user')
 		results = collection.update_one({'id':self.id}, {'$set':{'confirmed':self.confirmed}})
+		# collection.update_one({'id':self.id},{'$set':{'user_number': self.user_number}})
 		return True
     #####
 
@@ -111,7 +113,7 @@ class User(UserMixin, object):
 			### 20191122
 			'member_since':self.member_since,
 			'last_seen':self.last_seen,
-			'user_number': db.get_collection('user').find().count()
+			# 'user_number': self.user_number 
 		}
 		return dict_user
 
@@ -127,6 +129,7 @@ class User(UserMixin, object):
 			### 20191122
 			self.member_since = data.get('member_since')
 			self.last_seen = data.get('last_seen')
+			# self.user_number = data['user_number']
 
 ###
 # 20191112
