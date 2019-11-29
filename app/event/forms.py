@@ -29,6 +29,14 @@ class NameForm(FlaskForm):
 	schedules = StringField('이벤트를 입력하세요', validators=[Required()])
 	location = StringField('장소를 입력하세요', validators=[Required()])
 	submit = SubmitField('추가')
+
+class UpdateForm(FlaskForm):
+	year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
+	month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
+	day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
+	schedules = StringField('이벤트를 입력하세요', validators=[Required()])
+	location = StringField('장소를 입력하세요', validators=[Required()])
+	submit = SubmitField('추가')
 ######
 
 

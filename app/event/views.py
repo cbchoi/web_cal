@@ -3,7 +3,7 @@ import pymongo
 
 
 from ..models import User
-from .forms import NameForm, CreateButton
+from .forms import NameForm, UpdateForm, CreateButton
 from . import event
 
 from flask import Flask, render_template, session, redirect, url_for, flash, request
@@ -11,6 +11,7 @@ from flask_bootstrap import Bootstrap
 
 from flask_login import login_user, login_required, logout_user, current_user
 from .. import db
+
 '''
 conn = pymongo.MongoClient('mongodb://db:27017')
 db = conn.get_database("events")
@@ -46,7 +47,6 @@ def set_Mongo():
 	return col_event
 
 def Make_event(form):
-	flash('added a new schedules')
 
 	year = form.year.data
 	month = form.month.data
@@ -78,11 +78,11 @@ def index():
 	names = [result["name"] for result in col_event.find({"username":current_user.username})]
 	chk_lst = []
 	n = len(results)
-	print("??")
+
 
 	if form.validate_on_submit():
 		return redirect(url_for('.create'))
-	print("!!")
+
 	if request.method == "POST":
 		print("POST")
 		if request.form['submit_button'] == "Delete":
@@ -93,7 +93,7 @@ def index():
 			print("Revise")
 			return redirect(url_for('.update', req_name=request.form.get("name")))
 		else:
-			print("!")
+			pass
 	return render_template('event/main.html', results = results, form = form, len = n)
 
 
@@ -104,6 +104,7 @@ def create():
 	#d_button = DeleteButton()
 	#events = []
 	if form.validate_on_submit():
+		flash('added a new schedules')
 		col_event = set_Mongo()
 		name, date, date_num, location, schedules = Make_event(form)
 
@@ -117,9 +118,11 @@ def create():
 @event.route('/update/<req_name>', methods=['GET', 'POST'])
 @login_required
 def update(req_name):
-	form = NameForm()
+	col_event = set_Mongo()
+	form = UpdateForm()
+	old_name = col_event.find_one({"name":req_name})
 	if form.validate_on_submit():
-		col_event = set_Mongo()
+		flash('revised a new schedules')	
 		name, date, date_num, location, schedules = Make_event(form)
 
 		#form.schedules.data = ''
@@ -127,7 +130,7 @@ def update(req_name):
 		results = col_event.find()
 
 		return redirect(url_for('.index'))
-	return render_template('event/update.html',  form = form,
+	return render_template('event/update.html',  form = form, old_name = old_name,
 		year = session.get('year'), month = session.get('month'),
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 

@@ -5,7 +5,11 @@
 
 {% block page_content %}
 <div class = "page-header">
+	기존 날짜: {{ old_name['date'] }}<br>
+	기존 이벤트: {{ old_name['schedules'] }}<br>
+	기존 장소: {{ old_name['location'] }}<br>
 	{{ wtf.quick_form(form)}}
+	
 </div>
 
 {% endblock %}
