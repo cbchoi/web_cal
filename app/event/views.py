@@ -75,11 +75,11 @@ def index():
 	names = [result["name"] for result in col_event.find()]
 	chk_lst = []
 	n = len(results)
-
+	print("??")
 
 	if form.validate_on_submit():
 		return redirect(url_for('.create'))
-
+	print("!!")
 	if request.method == "POST":
 		print("POST")
 		if request.form['submit_button'] == "Delete":
