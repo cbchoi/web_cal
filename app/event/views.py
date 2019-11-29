@@ -75,14 +75,14 @@ def index():
 	results = sorted(unsorted_results, key=lambda a: a['date_num'])
 	#print(results)
 	today_date_num = date.today().year*10000 + date.today().month*100 + date.today().day
-	future_event = []
+	apeared_event = []
 	for i in results:
+		print(i["date_num"])
 		if i["date_num"] >= today_date_num:
-			future_event.append(i)
+			apeared_event.append(i)
 
 	names = [result["name"] for result in col_event.find({"username":current_user.username})]
-	chk_lst = []
-	n = len(future_event)
+	n = len(apeared_event)
 
 
 	if form.validate_on_submit():
@@ -91,13 +91,14 @@ def index():
 	if request.method == "POST":
 		print("POST")
 		if request.form['submit_button'] == "date range":
-			future_event = date_range(future_event)
-			n = len(future_event)
+			apeared_event = date_range(results)
+			n = len(apeared_event)
 			if n < 1:
-				flash("Date range is wrong or No event is found")
+				flash("Date range is wrong or No event is founded")
 				return redirect(url_for('.index'))
 		elif request.form['submit_button'] == "show all":
-			future_event = results
+			n = len(results)
+			apeared_event = results
 		elif request.form['submit_button'] == "Delete":
 			print("Delete")
 			col_event.delete_one({'name':request.form.get("name")})
@@ -107,7 +108,7 @@ def index():
 			return redirect(url_for('.update', req_name=request.form.get("name")))
 		else:
 			pass
-	return render_template('event/main.html', results = future_event, form = form, len = n, year = date.today().year,today = today_date_num)
+	return render_template('event/main.html', results = apeared_event, form = form, len = n, year = date.today().year,today = today_date_num)
 
 def date_range(event):
 	selected_date = []
