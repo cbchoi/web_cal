@@ -1,8 +1,10 @@
 from datetime import *
 import pymongo
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import Required, length
+
+
+from ..models import User
+from .forms import NameForm, CreateButton
+from . import event
 
 from flask import Flask, render_template, session, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap
@@ -22,25 +24,15 @@ results = collection.find()
 print(results)
 '''
 
-app = Flask(__name__)
+# app = Flask(__name__)
+# ######
+# app.config['SECRET_KEY'] = 'hard to guess string'
+# ######
+
+# bootstrap = Bootstrap(app)
+
+
 ######
-app.config['SECRET_KEY'] = 'hard to guess string'
-######
-
-bootstrap = Bootstrap(app)
-
-
-######
-
-year = []
-for i in range(date.today().year-10,date.today().year+10):
-    year.append((str(i),str(i)))
-month = []
-for i in range(1,13):
-    month.append((str(i),str(i)))
-day = []
-for i in range(1,32):
-    day.append((str(i),str(i)))
 
 
 def set_Mongo():
@@ -48,36 +40,31 @@ def set_Mongo():
 	db = conn.get_database('web_cal')
 	col_event = db.get_collection('event')
 	#col_event.delete_many({})
-	print(col_event.find())
+	#print(col_event.find())
 	return col_event
 
-
-
-
-
-class NameForm(FlaskForm):
-	#name = StringField('What is your schedules', validators=[Required()])
-	    #validators=[Required()]
-	year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
-	month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
-	day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
-	schedules = StringField('이벤트를 입력하세요', validators=[Required()])
-	location = StringField('장소를 입력하세요', validators=[Required()])
-	submit = SubmitField('추가')
-######
-
-
-# class DeleteButton(FlaskForm):
-#     submit = SubmitField("일정삭제")
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-
+@event.route('/schedules', methods=['GET', 'POST'])
+def schedules():
+	form = CreateButton()
 	col_event = set_Mongo()
-	cursor = col_event.find()
+	#cursor = col_event.find()
 	results = [result for result in col_event.find()]
 	names = [result["name"] for result in col_event.find()]
+	chk_lst = []
+	n = len(results)
+	#for i in range(n):
+	#	chk_lst.append(results[i]["name"])
+	#print(chk_lst)
 
+	#전체 삭제하기용
+	#col_event.delete_many({})
+
+	#if request.method == "POST":
+	#	print(request.form.get('name'))
+	#	for i in range(n):
+	#		if request.form.get(i):
+	#			col_event.delete_one({'name':request.form.get(i)})
+	#	return redirect(url_for('index'))
 	#value = request.form.getlist('check') 
 	#if form.validate_on_submit():
 		# for i in names:
@@ -86,14 +73,17 @@ def index():
 		# 		print(request.form.get(i))
 				# col_event.delete_one({'name':i})
 				# print(col_event.delete_one({'name':i}))
+	if form.validate_on_submit():
+		return redirect(url_for('event.create'))
 	if request.method == "POST":
-		print(request.form.get("name"))
+		#print(request.form.get("name"))
 		col_event.delete_one({'name':request.form.get("name")})
-		return redirect(url_for('index'))
-	return render_template('main.html', results = results, len = len(results))
+		return redirect(request.args.get('next') or url_for('event.schedules'))
+		# return redirect(url_for('event.schedules'))
+	return render_template('event/main.html', results = results, form = form, len = n)
 
 
-@app.route('/create', methods=['GET', 'POST'])
+@event.route('/create', methods=['GET', 'POST'])
 def create():
 	form = NameForm()
 	#d_button = DeleteButton()
@@ -124,9 +114,9 @@ def create():
 		#form.schedules.data = ''
 		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
 		results = col_event.find()
-		[print(result) for result in results]
-		return redirect(url_for('index'))
-	return render_template('create.html',  form = form,
+		#[print(result) for result in results]
+		return redirect(url_for('event.schedules'))
+	return render_template('event/create.html',  form = form,
 		year = session.get('year'), month = session.get('month'),
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
@@ -137,5 +127,5 @@ def create():
 #def user(name):
 #	return render_template('user.html', name=name)
 
-if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0')
+# if __name__ == '__main__':
+# 	app.run(debug=True, host='0.0.0.0')
