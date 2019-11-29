@@ -76,7 +76,13 @@ def index():
 	form = CreateButton()
 	col_event = set_Mongo()
 	#cursor = col_event.find()
-	results = [result for result in col_event.find()]
+	#
+	#results = [result for result in col_event.find()]
+	#print(results)
+	
+	unsorted_results = [result for result in col_event.find()]
+	results = sorted(unsorted_results, key=lambda a: a['date_num'])
+	
 	names = [result["name"] for result in col_event.find()]
 	chk_lst = []
 	n = len(results)
@@ -105,8 +111,15 @@ def index():
 		return redirect(url_for('create'))
 	if request.method == "POST":
 		#print(request.form.get("name"))
-		col_event.delete_one({'name':request.form.get("name")})
-		return redirect(url_for('index'))
+		print(request.form.get("name"))
+		if request.form['submit_button'] == "Delete":
+			col_event.delete_one({'name':request.form.get("name")})
+			return redirect(url_for('index'))
+		elif request.form['submit_button'] == "Revise":
+			return redirect(url_for('update'))
+		else:
+			pass
+
 	return render_template('main.html', results = results, form = form, len = n)
 
 
@@ -128,6 +141,7 @@ def create():
 		month = form.month.data
 		day = form.day.data
 		date = str(year) + "-" + str(month) + "-" + str(day)
+		date_num = int(str(year) + str(month) + str(day))
 		
 		#session['schedules'] = form.schedules.data
 		#event = session.get('schedules')
@@ -139,7 +153,7 @@ def create():
 		name = date+","+schedules
 
 		#form.schedules.data = ''
-		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
+		col_event.insert_one({"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules})
 		results = col_event.find()
 		#[print(result) for result in results]
 		return redirect(url_for('index'))
@@ -147,6 +161,10 @@ def create():
 		year = session.get('year'), month = session.get('month'),
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+	return "Hello"
+	pass
 
 
 
