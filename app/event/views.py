@@ -51,8 +51,11 @@ def Make_event(form):
 	year = form.year.data
 	month = form.month.data
 	day = form.day.data
-	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2)
-	date_num = int(str(year) + str(month).zfill(2) + str(day).zfill(2))
+	hour = form.hour.data
+	minute = form.minute.data
+
+	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2) + " " + str(hour).zfill(2) + ":" + str(minute).zfill(2)
+	date_num = int(str(year) + str(month).zfill(2) + str(day).zfill(2) + str(hour).zfill(2) + str(minute).zfill(2))
 	
 
 	schedules = form.schedules.data
@@ -78,7 +81,7 @@ def index():
 	apeared_event = []
 	for i in results:
 		print(i["date_num"])
-		if i["date_num"] >= today_date_num:
+		if i["date_num"] >= today_date_num*10000:
 			apeared_event.append(i)
 
 	names = [result["name"] for result in col_event.find({"username":current_user.username})]
@@ -119,8 +122,10 @@ def date_range(event):
 	selected_date = request.form.getlist("date range")
 	date_from = int(selected_date[0]) * 10000 + int(selected_date[1]) * 100 + int(selected_date[2])
 	date_to = int(selected_date[3]) * 10000 + int(selected_date[4]) * 100 + int(selected_date[5])
+	#print(date_from)
+	#print(date_to)
 	for i in event:
-		if i["date_num"] >= date_from and i["date_num"] <= date_to:
+		if i["date_num"] >= date_from*10000 and i["date_num"] <= (date_to*10000+1159):
 			selected_event.append(i)
 	return selected_event
 

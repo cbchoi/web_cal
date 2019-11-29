@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-
 {% block title %}sitapp - event{% endblock %}
 
 
@@ -75,7 +74,7 @@
 </div>
 
 {% for i in range (len) %}
-{% if today == results[i]["date_num"] %}
+{% if today == results[i]["date_num"]//10000 %}
 <div class="page-body">
 	<div class="panel panel-primary" >
 		<div class="panel-heading"><h2>{{results[i]["date"]}}</h2></div>
