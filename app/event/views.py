@@ -68,8 +68,8 @@ def index():
 	form = CreateButton()
 	col_event = set_Mongo()
 	#col_event.delete_many({})
-	results = [result for result in col_event.find({"username":current_user.username})]
-	print(results)
+	#results = [result for result in col_event.find({"username":current_user.username})]
+	#print(results)
 
 	unsorted_results = [result for result in col_event.find({"username":current_user.username})]
 	results = sorted(unsorted_results, key=lambda a: a['date_num'])
