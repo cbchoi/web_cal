@@ -6,6 +6,7 @@
 
 
 {% block page_content %}
+{{ wtf.quick_form(form)}}
 {% for i in range (len) %}
 <div class="page-body">
 	<div class="panel panel-default">
@@ -22,8 +23,6 @@
 	
 </div>
 {% endfor %}
-
-{{ wtf.quick_form(form)}}
 
 {% endblock %}
 
