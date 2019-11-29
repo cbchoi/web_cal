@@ -71,8 +71,8 @@ def before_request():
         current_user.ping()
 
         ### for check email
-        if not current_user.confirmed and request.endpoint[:5] != 'auth.':
-            return redirect(url_for('auth.unconfirmed'))
+        #if not current_user.confirmed and request.endpoint[:5] != 'auth.':
+        #    return redirect(url_for('auth.unconfirmed'))
 
 @auth.route('/unconfirmed')
 def unconfirmed():

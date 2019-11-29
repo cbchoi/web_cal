@@ -54,7 +54,7 @@ def Make_event(form):
 	hour = form.hour.data
 	minute = form.minute.data
 
-	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2) + " " + str(hour).zfill(2) + ":" + str(minute).zfill(2)
+	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2) + "_" + str(hour).zfill(2) + ":" + str(minute).zfill(2)
 	date_num = int(str(year) + str(month).zfill(2) + str(day).zfill(2) + str(hour).zfill(2) + str(minute).zfill(2))
 	
 
@@ -80,7 +80,7 @@ def index():
 	today_date_num = date.today().year*10000 + date.today().month*100 + date.today().day
 	apeared_event = []
 	for i in results:
-		print(i["date_num"])
+		#print(i)
 		if i["date_num"] >= today_date_num*10000:
 			apeared_event.append(i)
 
@@ -104,10 +104,12 @@ def index():
 			apeared_event = results
 		elif request.form['submit_button'] == "Delete":
 			print("Delete")
+			#print(request.form.get("name"))
 			col_event.delete_one({'name':request.form.get("name")})
 			return redirect(url_for('.index'))
 		elif request.form['submit_button'] == "Revise":
 			print("Revise")
+			print(request.form.get("name"))
 			return redirect(url_for('.update', req_name=request.form.get("name")))
 		else:
 			pass
@@ -152,7 +154,9 @@ def create():
 def update(req_name):
 	col_event = set_Mongo()
 	form = UpdateForm()
-	old_name = col_event.find_one({"name":req_name})
+	old_name = col_event.find_one({'name':req_name})
+	print(req_name)
+	print(old_name)
 	if form.validate_on_submit():
 		flash('revised a new schedules')	
 		name, date, date_num, location, schedules = Make_event(form)
