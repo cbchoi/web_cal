@@ -1,7 +1,11 @@
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% macro print_result(results) %}
 
+{% block title %}sitapp - event{% endblock %}
+
+
+{% block page_content %}
 {% for i in range (len) %}
 <div class="page-body">
 	<div class="panel panel-default">
@@ -12,7 +16,8 @@
 
 	<form method="POST" action = "/">
 	<input type="hidden" name="name" value={{ results[i]['name'] }}>
-	<input type = "submit" value = "일정삭제">
+	<input name="submit_button" type = "submit" value = "Revise">
+	<input name="submit_button" type = "submit" value = "Delete">
 	</form>
 	
 </div>
@@ -20,7 +25,7 @@
 
 {{ wtf.quick_form(form)}}
 
-{% endmacro %}
+{% endblock %}
 
 
 

@@ -43,43 +43,54 @@ def set_Mongo():
 	#print(col_event.find())
 	return col_event
 
-@event.route('/schedules', methods=['GET', 'POST'])
-def schedules():
+def Make_event(form):
+	flash('added a new schedules')
+
+	year = form.year.data
+	month = form.month.data
+	day = form.day.data
+	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2)
+	date_num = int(str(year) + str(month).zfill(2) + str(day).zfill(2))
+	
+
+	schedules = form.schedules.data
+	location = form.location.data
+	name = date+","+schedules
+
+	return name, date, date_num, location, schedules
+
+@event.route('/', methods=['GET', 'POST'])
+def index():
 	form = CreateButton()
 	col_event = set_Mongo()
-	#cursor = col_event.find()
+	#col_event.delete_many({})
 	results = [result for result in col_event.find()]
+
+	unsorted_results = [result for result in col_event.find()]
+	results = sorted(unsorted_results, key=lambda a: a['date_num'])
+	#print(results)
+
+
+
 	names = [result["name"] for result in col_event.find()]
 	chk_lst = []
 	n = len(results)
-	#for i in range(n):
-	#	chk_lst.append(results[i]["name"])
-	#print(chk_lst)
 
-	#전체 삭제하기용
-	#col_event.delete_many({})
 
-	#if request.method == "POST":
-	#	print(request.form.get('name'))
-	#	for i in range(n):
-	#		if request.form.get(i):
-	#			col_event.delete_one({'name':request.form.get(i)})
-	#	return redirect(url_for('index'))
-	#value = request.form.getlist('check') 
-	#if form.validate_on_submit():
-		# for i in names:
-		# 	i = str(i)
-		# 	if request.form.get(i):
-		# 		print(request.form.get(i))
-				# col_event.delete_one({'name':i})
-				# print(col_event.delete_one({'name':i}))
 	if form.validate_on_submit():
-		return redirect(url_for('event.create'))
+		return redirect(url_for('.create'))
+
 	if request.method == "POST":
-		#print(request.form.get("name"))
-		col_event.delete_one({'name':request.form.get("name")})
-		return redirect(request.args.get('next') or url_for('event.schedules'))
-		# return redirect(url_for('event.schedules'))
+		print("POST")
+		if request.form['submit_button'] == "Delete":
+			print("Delete")
+			col_event.delete_one({'name':request.form.get("name")})
+			return redirect(url_for('.index'))
+		elif request.form['submit_button'] == "Revise":
+			print("Revise")
+			return redirect(url_for('.update', req_name=request.form.get("name")))
+		else:
+			print("!")
 	return render_template('event/main.html', results = results, form = form, len = n)
 
 
@@ -90,36 +101,30 @@ def create():
 	#events = []
 	if form.validate_on_submit():
 		col_event = set_Mongo()
-		flash('added a new schedules')
-		#session['year'] = form.year.data
-		#session['month'] = form.month.data
-		#session['day'] = form.day.data
-		#year = session.get('year')
-		#month = session.get('month')
-		#day = session.get('day')
-		year = form.year.data
-		month = form.month.data
-		day = form.day.data
-		date = str(year) + "-" + str(month) + "-" + str(day)
-		
-		#session['schedules'] = form.schedules.data
-		#event = session.get('schedules')
-		#session['location'] = form.location.data
-		#location = session.get('location')
+		name, date, date_num, location, schedules = Make_event(form)
 
-		schedules = form.schedules.data
-		location = form.location.data
-		name = date+","+schedules
-
-		#form.schedules.data = ''
-		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
+		col_event.insert_one({"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules})
 		results = col_event.find()
-		#[print(result) for result in results]
-		return redirect(url_for('event.schedules'))
+		return redirect(url_for('.index'))
 	return render_template('event/create.html',  form = form,
 		year = session.get('year'), month = session.get('month'),
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
+@event.route('/update/<req_name>', methods=['GET', 'POST'])
+def update(req_name):
+	form = NameForm()
+	if form.validate_on_submit():
+		col_event = set_Mongo()
+		name, date, date_num, location, schedules = Make_event(form)
+
+		#form.schedules.data = ''
+		col_event.update_one({"name":req_name}, {'$set': {"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules}})
+		results = col_event.find()
+
+		return redirect(url_for('.index'))
+	return render_template('event/update.html',  form = form,
+		year = session.get('year'), month = session.get('month'),
+		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
 
 
