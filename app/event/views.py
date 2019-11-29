@@ -93,9 +93,9 @@ def index():
 		if request.form['submit_button'] == "date range":
 			results = date_range(results)
 			n = len(results)
-			if n < 1:
-				flash("Date range is wrong")
-				return redirect(url_for('.index'))
+			#if n < 1:
+			#	flash("Date range is wrong")
+			#	return redirect(url_for('.index'))
 		# elif request.form['submit_button'] == "show all":
 		# 	future_event = results
 		elif request.form['submit_button'] == "Delete":
@@ -114,14 +114,13 @@ def date_range(event):
 	date_from = 0
 	date_to = 0
 	selected_event = []
-	if request.method == "POST":
-		if request.form['submit_button'] == "date range":
-			selected_date = request.form.getlist("date range")
-			date_from = int(selected_date[0]) * 10000 + int(selected_date[1]) * 100 + int(selected_date[2])
-			date_to = int(selected_date[3]) * 10000 + int(selected_date[4]) * 100 + int(selected_date[5])
-		for i in event:
-			if i["date_num"] >= date_from and i["date_num"] <= date_to:
-				selected_event.append(i)
+
+	selected_date = request.form.getlist("date range")
+	date_from = int(selected_date[0]) * 10000 + int(selected_date[1]) * 100 + int(selected_date[2])
+	date_to = int(selected_date[3]) * 10000 + int(selected_date[4]) * 100 + int(selected_date[5])
+	for i in event:
+		if i["date_num"] >= date_from and i["date_num"] <= date_to:
+			selected_event.append(i)
 	return selected_event
 
 @event.route('/create', methods=['GET', 'POST'])
