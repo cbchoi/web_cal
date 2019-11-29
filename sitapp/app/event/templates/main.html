@@ -6,16 +6,24 @@
 <div class="page-body">
 	<div class="panel panel-default">
 		<div class="panel-heading"><h2>{{results[i]["date"]}}</h2></div>
-  		<div class="panel-body">{{ results[i]["schedules"] }}</div>
+  		<div class="panel-body">장소: {{ results[i]["location"] }}</div>
+  		<div class="panel-body">일정: {{ results[i]["schedules"] }}</div>
 	</div>
 
 	<form method="POST" action = "/">
-	<input type="checkbox" name= "name" value= {{ results[i]["name"] }}>
-	<input type = "submit"> 
+	<input type="hidden" name="name" value={{ results[i]['name'] }}>
+	<input name="submit_button" type = "submit" value = "Revise">
+	<input name="submit_button" type = "submit" value = "Delete">
 	</form>
+<<<<<<< HEAD
+=======
+	
+>>>>>>> f83218f4b5b4da437726760d76f9460c21842f67
 </div>
 {% endfor %}
-  	
+
+{{ wtf.quick_form(form)}}
+
 {% endmacro %}
 
 <div class = "page-header">

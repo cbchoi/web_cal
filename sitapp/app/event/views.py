@@ -48,7 +48,7 @@ def set_Mongo():
 	db = conn.get_database('web_cal')
 	col_event = db.get_collection('event')
 	#col_event.delete_many({})
-	print(col_event.find())
+	#print(col_event.find())
 	return col_event
 
 
@@ -67,17 +67,47 @@ class NameForm(FlaskForm):
 ######
 
 
+<<<<<<< HEAD
 # class DeleteButton(FlaskForm):
 #     submit = SubmitField("일정삭제")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
-	col_event = set_Mongo()
-	cursor = col_event.find()
-	results = [result for result in col_event.find()]
-	names = [result["name"] for result in col_event.find()]
+=======
+class CreateButton(FlaskForm):
+    submit = SubmitField("일정만들기")
+    #delete = SubmitField("삭제하기")
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+	form = CreateButton()
+>>>>>>> f83218f4b5b4da437726760d76f9460c21842f67
+	col_event = set_Mongo()
+	#cursor = col_event.find()
+	#
+	#results = [result for result in col_event.find()]
+	#print(results)
+	
+	unsorted_results = [result for result in col_event.find()]
+	results = sorted(unsorted_results, key=lambda a: a['date_num'])
+	
+	names = [result["name"] for result in col_event.find()]
+	chk_lst = []
+	n = len(results)
+	#for i in range(n):
+	#	chk_lst.append(results[i]["name"])
+	#print(chk_lst)
+
+	#전체 삭제하기용
+	#col_event.delete_many({})
+
+	#if request.method == "POST":
+	#	print(request.form.get('name'))
+	#	for i in range(n):
+	#		if request.form.get(i):
+	#			col_event.delete_one({'name':request.form.get(i)})
+	#	return redirect(url_for('index'))
 	#value = request.form.getlist('check') 
 	#if form.validate_on_submit():
 		# for i in names:
@@ -86,11 +116,26 @@ def index():
 		# 		print(request.form.get(i))
 				# col_event.delete_one({'name':i})
 				# print(col_event.delete_one({'name':i}))
+	if form.validate_on_submit():
+		return redirect(url_for('create'))
 	if request.method == "POST":
+		#print(request.form.get("name"))
 		print(request.form.get("name"))
+<<<<<<< HEAD
 		col_event.delete_one({'name':request.form.get("name")})
 		return redirect(url_for('index'))
 	return render_template('main.html', results = results, len = len(results))
+=======
+		if request.form['submit_button'] == "Delete":
+			col_event.delete_one({'name':request.form.get("name")})
+			return redirect(url_for('index'))
+		elif request.form['submit_button'] == "Revise":
+			return redirect(url_for('update'))
+		else:
+			pass
+
+	return render_template('main.html', results = results, form = form, len = n)
+>>>>>>> f83218f4b5b4da437726760d76f9460c21842f67
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -111,6 +156,7 @@ def create():
 		month = form.month.data
 		day = form.day.data
 		date = str(year) + "-" + str(month) + "-" + str(day)
+		date_num = int(str(year) + str(month) + str(day))
 		
 		#session['schedules'] = form.schedules.data
 		#event = session.get('schedules')
@@ -122,14 +168,18 @@ def create():
 		name = date+","+schedules
 
 		#form.schedules.data = ''
-		col_event.insert_one({"name": name, "date":date, "location": location, "schedules": schedules})
+		col_event.insert_one({"name": name, "date":date, "date_num":date_num, "location": location, "schedules": schedules})
 		results = col_event.find()
-		[print(result) for result in results]
+		#[print(result) for result in results]
 		return redirect(url_for('index'))
 	return render_template('create.html',  form = form,
 		year = session.get('year'), month = session.get('month'),
 		day = session.get('day'), location = session.get('location'), schedules = session.get('schedules'))
 
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+	return "Hello"
+	pass
 
 
 
