@@ -30,20 +30,25 @@ class CreateForm(FlaskForm):
 class NameForm(FlaskForm):
 	#name = StringField('What is your schedules', validators=[Required()])
 	    #validators=[Required()]
-	year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
-	month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
-	day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
+	#year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
+	#month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
+	#day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
 	hour = SelectField("시간",choices = hour,validators=[Required()])
 	minute = SelectField("분",choices = minute,validators=[Required()])
+
+	dt = DateField('날짜', format='%Y-%m-%d')
+
 
 	schedules = StringField('이벤트를 입력하세요', validators=[Required()])
 	location = StringField('장소를 입력하세요', validators=[Required()])
 	submit = SubmitField('추가')
 
 class UpdateForm(FlaskForm):
-	year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
-	month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
-	day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
+	#year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
+	#month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
+	#day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
+	dt = DateField('날짜', format='%Y-%m-%d')
+
 	hour = SelectField("시간",choices = hour,validators=[Required()])
 	minute = SelectField("분",choices = minute,validators=[Required()])
 

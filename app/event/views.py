@@ -49,15 +49,19 @@ def set_Mongo():
 
 def Make_event(form):
 
-	year = form.year.data
-	month = form.month.data
-	day = form.day.data
+	#year = form.year.data
+	#month = form.month.data
+	#day = form.day.data
 	hour = form.hour.data
 	minute = form.minute.data
 
-	date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2) + "_" + str(hour).zfill(2) + ":" + str(minute).zfill(2)
+	#date = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2) + "_" + str(hour).zfill(2) + ":" + str(minute).zfill(2)
+	date = str(form.dt.data)+ "_" +str(hour).zfill(2) + ":" + str(minute).zfill(2)
+	year = date[:4]
+	month = date[5:7]
+	day = date[8:10]
 	date_num = int(str(year) + str(month).zfill(2) + str(day).zfill(2) + str(hour).zfill(2) + str(minute).zfill(2))
-	
+	#date_num = int( str(hour).zfill(2) + str(minute).zfill(2))
 
 	schedules = form.schedules.data
 	location = form.location.data
