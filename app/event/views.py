@@ -70,10 +70,6 @@ def index():
 	#col_event.delete_many({})
 	results = [result for result in col_event.find({"username":current_user.username})]
 	print(results)
-	print(current_user.user_number)
-	print(current_user.username)
-	print(current_user.confirmed)
-	print(current_user.user_number)
 
 	unsorted_results = [result for result in col_event.find({"username":current_user.username})]
 	results = sorted(unsorted_results, key=lambda a: a['date_num'])
