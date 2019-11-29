@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import Required, length
+
 from datetime import *
 
 year = []
@@ -33,11 +35,10 @@ class NameForm(FlaskForm):
 	#year = SelectField("년",choices = year,validators=[Required()],default=date.today().year)
 	#month = SelectField("월", choices=month,validators=[Required()],default=date.today().month)
 	#day = SelectField("일",choices = day,validators=[Required()],default=date.today().day)
-	hour = SelectField("시간",choices = hour,validators=[Required()])
-	minute = SelectField("분",choices = minute,validators=[Required()])
-
 	dt = DateField('날짜', format='%Y-%m-%d')
 
+	hour = SelectField("시간",choices = hour,validators=[Required()])
+	minute = SelectField("분",choices = minute,validators=[Required()])
 
 	schedules = StringField('이벤트를 입력하세요', validators=[Required()])
 	location = StringField('장소를 입력하세요', validators=[Required()])
