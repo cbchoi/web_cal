@@ -74,6 +74,11 @@ def index():
 	unsorted_results = [result for result in col_event.find({"username":current_user.username})]
 	results = sorted(unsorted_results, key=lambda a: a['date_num'])
 	#print(results)
+	# today_date_num = date.today().year*10000 + date.today().month*100 + date.today().day
+	# future_event = []
+	# for i in results:
+	# 	if i["date_num"] >= today_date_num:
+	# 		future_event.append(i)
 
 	names = [result["name"] for result in col_event.find({"username":current_user.username})]
 	chk_lst = []
@@ -85,7 +90,15 @@ def index():
 
 	if request.method == "POST":
 		print("POST")
-		if request.form['submit_button'] == "Delete":
+		if request.form['submit_button'] == "date range":
+			future_event = date_range(results)
+			n = len(future_event)
+			if n < 1:
+				flash("Date range is wrong")
+				return redirect(url_for('.index'))
+		# elif request.form['submit_button'] == "show all":
+		# 	future_event = results
+		elif request.form['submit_button'] == "Delete":
 			print("Delete")
 			col_event.delete_one({'name':request.form.get("name")})
 			return redirect(url_for('.index'))
@@ -94,8 +107,22 @@ def index():
 			return redirect(url_for('.update', req_name=request.form.get("name")))
 		else:
 			pass
-	return render_template('event/main.html', results = results, form = form, len = n)
+	return render_template('event/main.html', results = results, form = form, len = n, year = date.today().year)
 
+def date_range(event):
+	selected_date = []
+	date_from = 0
+	date_to = 0
+	selected_event = []
+	if request.method == "POST":
+		if request.form['submit_button'] == "date range":
+			selected_date = request.form.getlist("date range")
+			date_from = int(selected_date[0]) * 10000 + int(selected_date[1]) * 100 + int(selected_date[2])
+			date_to = int(selected_date[3]) * 10000 + int(selected_date[4]) * 100 + int(selected_date[5])
+		for i in event:
+			if i["date_num"] >= date_from and i["date_num"] <= date_to:
+				selected_event.append(i)
+	return selected_event
 
 @event.route('/create', methods=['GET', 'POST'])
 @login_required

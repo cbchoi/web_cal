@@ -7,6 +7,73 @@
 
 {% block page_content %}
 {{ wtf.quick_form(form)}}
+
+<div class="row">
+	<form method="POST">
+	<div class="col-md-2">
+		<label for="all_classes">year</label>
+		<select class="form-control" name = "date range" id="year1">
+			{% for i in range(year-10,year+10) %}
+			<option value={{i}}>{{i}}</option>
+			{% endfor %}
+        </select>
+    </div>
+    <div class="col-md-1">
+    	<label for="all_entries">month</label>
+    	<select class="form-control" name = "date range" id="month1">
+    		{% for i in range(1,13) %}
+    		<option value={{i}}>{{i}}</option>
+    		{% endfor %}
+    	</select>
+    </div>
+    <div class="col-md-1">
+    	<label for="all_entries">day</label>
+    	<select class="form-control" name = "date range" id="day1">
+    		{% for i in range(1,32) %}
+    		<option value={{i}}>{{i}}</option>
+    		{% endfor %}
+    	</select>
+    </div>
+    <div class="col-md-1">
+    	<h3><center>~</center></h3>
+    </div>
+    <div class="form-group col-md-2">
+		<label for="all_classes">year</label>
+		<select class="form-control" name = "date range" id="year2">
+			{% for i in range(year-10,year+10) %}
+			<option value={{i}}>{{i}}</option>
+			{% endfor %}
+        </select>
+    </div>
+    <div class="col-md-1">
+    	<label for="all_entries">month</label>
+    	<select class="form-control" name = "date range" id="month2">
+    		{% for i in range(1,13) %}
+    		<option value={{i}}>{{i}}</option>
+    		{% endfor %}
+    	</select>
+    </div>
+    <div class="col-md-1">
+    	<label for="all_entries">day</label>
+    	<select class="form-control" name = "date range" id="day2">
+    		{% for i in range(1,32) %}
+    		<option value={{i}}>{{i}}</option>
+    		{% endfor %}
+    	</select>
+    </div>
+    <div>
+    	<div class="col-md-1">
+    			<br>
+    			<input name="submit_button" type = "submit" value = "date range">
+    	</div>
+    	<!-- <div class="col-md-1">
+    		<br>
+    		<input name="submit_button" type = "submit" value = "show all">
+    	</div> -->
+    </div>
+    </form>
+</div>
+
 {% for i in range (len) %}
 <div class="page-body">
 	<div class="panel panel-default">
