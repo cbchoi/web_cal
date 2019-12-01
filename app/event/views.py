@@ -91,8 +91,8 @@ def index():
 	if request.method == "POST":
 		print("POST")
 		if request.form['submit_button'] == "date range":
-			future_event = date_range(results)
-			n = len(future_event)
+			results = date_range(results)
+			n = len(results)
 			if n < 1:
 				flash("Date range is wrong")
 				return redirect(url_for('.index'))
