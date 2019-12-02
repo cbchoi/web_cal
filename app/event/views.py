@@ -94,7 +94,7 @@ def index():
 	if request.method == "POST":
 		print("POST")
 		if request.form['submit_button'] == "date range":
-			apeared_event = date_range(results)
+			apeared_event = date_range(apeared_event)
 			n = len(apeared_event)
 			if n < 1:
 				flash("Date range is wrong or No event is founded")
