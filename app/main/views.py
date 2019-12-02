@@ -46,16 +46,14 @@ def user(username):
 def edit_profile():
 	form = EditProfileForm()
 	if form.validate_on_submit():
-		current_user.username = form.username.data	
 		
 		# db update
 		collection = db.get_collection('user')
+		collection2 = db.get_collection('event')
 		collection.delete_one({'id':current_user.id})
-		collection.insert_one(current_user.to_dict())
-
-		flash('Your profile has been updated.')
-		return redirect(url_for('.user', username=current_user.username))
-	form.username.data = current_user.username
+		collection2.delete_one({'id':current_user.id})
+		flash('회원탈퇴 되었습니다.')
+		return redirect(url_for('.index'))
 	return render_template('edit_profile.html', form=form)
 
 @main.route('/edit-profile/<id>', methods=['GET', 'POST'])

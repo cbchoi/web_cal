@@ -16,8 +16,8 @@ class NameForm(FlaskForm):
 
 # 20191122
 class EditProfileForm(FlaskForm):
-	username = StringField('Real name', validators=[Length(0, 64)])
-	submit = SubmitField('Submit')
+	#username = StringField('Real name', validators=[Length(0, 64)])
+	submit = SubmitField('회원탈퇴')
 
 class EditProfileAdminForm(FlaskForm):
 	id = StringField('Email', validators=[Required(), Length(1, 64), Email()])
