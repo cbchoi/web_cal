@@ -34,9 +34,9 @@ def user(username):
 	collection = db.get_collection('user')
 	results = collection.find_one({'username':username})
 	if results is not None:
-		user = User(results['id'], "", "") 
+		user = User(results['id'], "", "")
 		user.from_dict(results)
-		#print(user.role.permission)
+		print(user.id)
 		return render_template('user.html', user=user)
 	else:
 		abort(404)

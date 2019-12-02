@@ -25,14 +25,14 @@ class RegistrationForm(FlaskForm):
 	submit = SubmitField('Register')
 
 	def validate_email(self, field):
-		collection = db.get_collection('users')
+		collection = db.get_collection('user')
 		results = collection.find_one({'id':field.data})
 		if results is not None:
 			raise ValidationError('Email already registered.')
 		pass
 	
 	def validate_username(self, field):
-		collection = db.get_collection('users')
+		collection = db.get_collection('user')
 		results = collection.find_one({'username':field.data})
 		if results is not None:
 			raise ValidationError('Username already registered.')
