@@ -60,6 +60,8 @@ def confirm(token):
     if current_user.confirm(token): 
         collection = db.get_collection('user')
         collection.update_one({"id":current_user.id},{"$set":{"member_since":datetime.utcnow()}})
+        user_collection = db.get_collection(current_user.username)
+        #user_collection.insert_one({"username":current_user.username})
         flash('You have confirmed your account. Thanks!') 
     else: 
         flash('The confirmation link is invalid or has expired.') 

@@ -41,7 +41,8 @@ print(results)
 def set_Mongo():
 	conn = pymongo.MongoClient('mongodb://db:27017')
 	db = conn.get_database('web_cal')
-	col_event = db.get_collection('event')
+	col_event = db.get_collection(current_user.username)
+	print(current_user.username)
 	#col_event.delete_many({})
 	#print(col_event.find())
 	return col_event
@@ -68,14 +69,15 @@ def Make_event(form):
 @event.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+	print(date.today())
 	form = CreateButton()
 	col_event = set_Mongo()
 	#col_event.delete_many({})
 	#results = [result for result in col_event.find({"username":current_user.username})]
 	#print(results)
-
-	unsorted_results = [result for result in col_event.find({"username":current_user.username})]
-	results = sorted(unsorted_results, key=lambda a: a['date_num'])
+	if col_event.find() is not None:
+		unsorted_results = [result for result in col_event.find({"username":current_user.username})]
+		results = sorted(unsorted_results, key=lambda a: a['date_num'])
 	#print(results)
 	today_date_num = date.today().year*10000 + date.today().month*100 + date.today().day
 	apeared_event = []

@@ -31,7 +31,7 @@ def index():
 # 20191122
 @main.route('/user/<username>')
 def user(username):
-	collection = db.get_collection('user')
+	collection = db.get_collection(current_user.username)
 	results = collection.find_one({'username':username})
 	if results is not None:
 		user = User(results['id'], "", "")
@@ -48,10 +48,12 @@ def edit_profile():
 	if form.validate_on_submit():
 		
 		# db update
-		collection = db.get_collection('user')
-		collection2 = db.get_collection('event')
-		collection.delete_one({'id':current_user.id})
-		collection2.delete_one({'id':current_user.id})
+		collection = db.get_collection(current_user.username)
+		collection.delete_Many({"username":current_user.username})
+		# collection = db.get_collection('user')
+		# collection2 = db.get_collection('event')
+		# collection.delete_one({'id':current_user.id})
+		# collection2.delete_one({'id':current_user.id})
 		flash('회원탈퇴 되었습니다.')
 		return redirect(url_for('.index'))
 	return render_template('edit_profile.html', form=form)
@@ -60,7 +62,7 @@ def edit_profile():
 @login_required
 @admin_required
 def edit_profile_admin(id):
-	collection = db.get_collection('user')
+	collection = db.get_collection(current_user.username)
 	result = collection.find_one({'id':id})
 	if result != None:
 		user = User(id, "", "")
@@ -74,7 +76,7 @@ def edit_profile_admin(id):
 			user.role.permission = Role.get_role_permission(form.role.data)
 
 			# db update
-			collection = db.get_collection('user')
+			collection = db.get_collection(current_user.username)
 			#collection.update_one({'id':user.id}, {'$set':{'role_id':form.role.data}})
 			collection.delete_one({'id':user.id})
 			collection.insert_one(user.to_dict())
