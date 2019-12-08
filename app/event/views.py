@@ -94,8 +94,8 @@ def index():
 	n = len(apeared_event)
 
 
-	if form.validate_on_submit():
-		return redirect(url_for('.create'))
+	# if form.validate_on_submit():
+	# 	return redirect(url_for('.create'))
 
 	if request.method == "POST":
 		print("POST")
@@ -119,7 +119,7 @@ def index():
 			return redirect(url_for('.update', req_name=request.form.get("name")))
 		else:
 			pass
-	return render_template('event/main.html', results = apeared_event, form = form, len = n, year = date.today().year,today = today_date_num)
+	return render_template('event/main.html', results = apeared_event, form = form,len = n, year = date.today().year,today = today_date_num)
 
 def date_range(event):
 	selected_date = []

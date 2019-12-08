@@ -6,8 +6,10 @@
 
 
 {% block page_content %}
-{{ wtf.quick_form(form)}}
-
+<form method = "POST" action = "/event/create">
+    {{ form.csrf_token() }}
+<input name="submit_button" type = "submit" value = "일정추가">
+</form>
 <div class="row">
 <form method="POST">
 	<div class="col-md-2">

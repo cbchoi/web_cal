@@ -43,7 +43,7 @@ def register():
         
         ### 20191108
         token = user.generate_confirmation_token()
-        send_email(user.id, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
+        # send_email(user.id, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
         return redirect(url_for('main.index'))
         return redirect(url_for('auth.login')) 
@@ -73,8 +73,8 @@ def before_request():
         current_user.ping()
 
         ### for check email
-        if not current_user.confirmed and request.endpoint[:5] != 'auth.':
-            return redirect(url_for('auth.unconfirmed'))
+        # if not current_user.confirmed and request.endpoint[:5] != 'auth.':
+        #     return redirect(url_for('auth.unconfirmed'))
 
 @auth.route('/unconfirmed')
 def unconfirmed():

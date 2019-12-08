@@ -58,6 +58,11 @@ class UpdateForm(FlaskForm):
 	submit = SubmitField('추가')
 ######
 
+class RangeForm(FlaskForm):
+	start_date = DateField('시작날짜', format = '%y-%-m-%d')
+	end_date = DateField('마침날짜', format = '%y-%-m-%d')
+
+	submit = SubmitField("찾기")
 
 class CreateButton(FlaskForm):
     submit = SubmitField("일정만들기")
