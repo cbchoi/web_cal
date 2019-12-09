@@ -29,27 +29,30 @@ def index():
 							known=session.get('known', False),
 							current_time=datetime.utcnow())
 # 20191122
-@main.route('/user/<username>')
-def user(username):
-	collection = db.get_collection(current_user.username)
-	results = collection.find_one({'username':username})
-	if results is not None:
-		user = User(results['id'], "", "")
-		user.from_dict(results)
-		print(user.id)
-		return render_template('user.html', user=user)
-	else:
-		abort(404)
+# @main.route('/user/<username>')
+# def user(username):
+# 	collection = db.get_collection(current_user.username)
+# 	results = collection.find_one({'username':username})
+# 	if results is not None:
+# 		user = User(results['id'], "", "")
+# 		user.from_dict(results)
+# 		print(user.id)
+# 		return render_template('user.html', user=user)
+# 	else:
+# 		abort(404)
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
 	form = EditProfileForm()
 	if form.validate_on_submit():
-		
+		user_name = current_user.username
 		# db update
-		collection = db.get_collection(current_user.username)
-		collection.delete_Many({"username":current_user.username})
+		collection = db.get_collection(user_name)
+		print(current_user.username)
+		collection.delete_many({"username":user_name})
+		collection = db.get_collection("user")
+		collection.delete_many({"username":user_name})
 		# collection = db.get_collection('user')
 		# collection2 = db.get_collection('event')
 		# collection.delete_one({'id':current_user.id})
@@ -58,40 +61,40 @@ def edit_profile():
 		return redirect(url_for('.index'))
 	return render_template('edit_profile.html', form=form)
 
-@main.route('/edit-profile/<id>', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def edit_profile_admin(id):
-	collection = db.get_collection(current_user.username)
-	result = collection.find_one({'id':id})
-	if result != None:
-		user = User(id, "", "")
-		user.from_dict(result)
-		form = EditProfileAdminForm(user=user)
-		if form.validate_on_submit():
-			user.id = form.id.data
-			user.username = form.username.data
-			user.confirmed = form.confirmed.data
-			user.role.role_id = form.role.data
-			user.role.permission = Role.get_role_permission(form.role.data)
+# @main.route('/edit-profile/<id>', methods=['GET', 'POST'])
+# @login_required
+# @admin_required
+# def edit_profile_admin(id):
+# 	collection = db.get_collection(current_user.username)
+# 	result = collection.find_one({'id':id})
+# 	if result != None:
+# 		user = User(id, "", "")
+# 		user.from_dict(result)
+# 		form = EditProfileAdminForm(user=user)
+# 		if form.validate_on_submit():
+# 			user.id = form.id.data
+# 			user.username = form.username.data
+# 			user.confirmed = form.confirmed.data
+# 			user.role.role_id = form.role.data
+# 			user.role.permission = Role.get_role_permission(form.role.data)
 
-			# db update
-			collection = db.get_collection(current_user.username)
-			#collection.update_one({'id':user.id}, {'$set':{'role_id':form.role.data}})
-			collection.delete_one({'id':user.id})
-			collection.insert_one(user.to_dict())
-			#print("!")
-			#print(user.to_dict())
+# 			# db update
+# 			collection = db.get_collection(current_user.username)
+# 			#collection.update_one({'id':user.id}, {'$set':{'role_id':form.role.data}})
+# 			collection.delete_one({'id':user.id})
+# 			collection.insert_one(user.to_dict())
+# 			#print("!")
+# 			#print(user.to_dict())
 
-			flash('The profile has been updated.')
-			return redirect(url_for('.user', username=user.username))
-		form.id.data = user.id
-		form.username.data = user.username
-		form.confirmed.data = user.confirmed
-		form.role.data = user.role.name
-		return render_template('edit_profile.html', form=form, user=user)
-	else:
-		abort(404)
+# 			flash('The profile has been updated.')
+# 			return redirect(url_for('.user', username=user.username))
+# 		form.id.data = user.id
+# 		form.username.data = user.username
+# 		form.confirmed.data = user.confirmed
+# 		form.role.data = user.role.name
+# 		return render_template('edit_profile.html', form=form, user=user)
+# 	else:
+# 		abort(404)
 
 @main.route('/admin')
 @login_required
