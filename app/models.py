@@ -32,12 +32,12 @@ class User(UserMixin, object):
 
 		###
 		#20191112
-		collection = db.get_collection('roles')
-		if self.id == current_app.config['ADMIN']:
-			self.role = Role('Administrator', 0xff)
-		else:
-			result = collection.find_one({'default':True})
-			self.role = Role(result['name'], result['permission'], result['default'])
+		# collection = db.get_collection('roles')
+		# if self.id == current_app.config['ADMIN']:
+		# 	self.role = Role('Administrator', 0xff)
+		# else:
+		# 	result = collection.find_one({'default':True})
+		# 	self.role = Role(result['name'], result['permission'], result['default'])
 		##
 		 
 	@property
