@@ -18,7 +18,7 @@ class User(UserMixin, object):
 	username = ""
 
 	###delete role in 12_1
-	# role = None 
+	role = None 
 	password_hash = ""
 	confirmed = False
 	member_since = ""
@@ -32,13 +32,13 @@ class User(UserMixin, object):
 
 		###
 		#20191112
-		# collection = db.get_collection('roles')
-		# if self.id == current_app.config['ADMIN']:
-		# 	self.role = Role('Administrator', 0xff)
-		# else:
-		# 	result = collection.find_one({'default':True})
-		# 	self.role = Role(result['name'], result['permission'], result['default'])
-		##
+		collection = db.get_collection('roles')
+		if self.id == current_app.config['ADMIN']:
+			self.role = Role('Administrator', 0xff)
+		else:
+			result = collection.find_one({'default':True})
+			self.role = Role(result['name'], result['permission'], result['default'])
+		#
 		 
 	@property
 	def password(self):
@@ -107,8 +107,8 @@ class User(UserMixin, object):
 			'id': self.id, 
 			'username':self.username,
 			### 20191112
-			# 'role_id':self.role.name,
-			# 'role_permission':self.role.permission,
+			'role_id':self.role.name,
+			'role_permission':self.role.permission,
 			####
 			'password_hash':self.password_hash,
 			'confirmed':self.confirmed,
@@ -124,7 +124,7 @@ class User(UserMixin, object):
 			self.id = data['id']
 			self.username = data['username']
 			### 20191112
-			# self.role = Role(data['role_id'], data['role_permission'])
+			self.role = Role(data['role_id'], data['role_permission'])
 			###
 			self.password_hash = data['password_hash']
 			self.confirmed = data['confirmed']
